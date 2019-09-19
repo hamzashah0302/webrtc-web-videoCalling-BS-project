@@ -1,0 +1,23 @@
+div#call {
+  position: relative;
+  display: block;
+  margin: 0 auto;
+  width: 500px;
+  height: 500px;
+}
+
+video {
+  background: white;
+  border: 1px solid gray;
+}
+div#mainContainer{
+  background-color: blue;
+}
+button#login{
+  background-color: aquamarine;
+}
+#callArea{
+  border-block-color: (#2c222a);
+  height: 200px;
+  width: 100%;
+}

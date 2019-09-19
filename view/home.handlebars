@@ -1,0 +1,160 @@
+{{!--css links ==================================== --}}
+<link rel="icon" type="image/png" href="/view/images/icons/favicon.jpg"/>
+
+	<link rel="stylesheet"  href="/view/vendor/bootstrap/css/bootstrap.min.css">
+
+	<link rel="stylesheet"  href="/view/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+
+	<link rel="stylesheet"  href="/view/fonts/Linearicons-Free-v1.0.0/icon-font.min.css">
+
+	<link rel="stylesheet"  href="/view/vendor/animate/animate.css">
+	
+	<link rel="stylesheet"  href="/view/vendor/css-hamburgers/hamburgers.min.css">
+
+ <link rel="stylesheet"  href="/view/vendor/select2/select2.min.css">
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+ {{!-- <link rel="stylesheet" href="myProjects/webProject/icofont/css/icofont.min.css"> --}}
+	  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+	<link rel="stylesheet" href="/view/css/util.css">
+{{!-- navbar code --}}
+  <div class="navbar-fixed">
+    <nav class="indigo darken-4 ">
+	<div class="container-fluid">
+	<div class="row">	
+    <div class="nav-wrapper col s12 l12 m12">
+    <div class="col m12 l8 align-center">
+    	<a href="#" class="brand-logo m-t-2" style="letter-spacing: 1px;"><img class="circle" src="/view/images/logo.jpg" alt="Logo" style="width:50px;"><b> SkyChat </b><span><small style="font-size: 15px;">Meet the World<small></span></a>
+    </div>
+    <div class="col m12 l4 ">
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li><a href="#">Profile <i class="fa fa-user" aria-hidden="true"></i>
+</a></li>
+        <li><a href="/logout">logout<i class="fa fa-sign-out"></i></a>
+</li>
+      </ul>
+    </div>
+    </div>
+    </div>
+	</div>
+  </nav></div>
+  {{!--<=======================================================================> --}}
+
+  {{!-- Welcome Header --}}
+  <div>
+	<nav class="grey darken-1" style="height: 60px;">
+	<div class="container-fluid">
+	<div class="row">	
+    <div class="nav-wrapper col s12 l12 m12">
+    <div class="col m12 l12 m12 text-left align-left " style="align-items: right;">
+      <ul id="nav-mobile">
+        <h5>Welcome {{id}}</h5>
+           <input type="hidden" id ="user_id" value={{id}}>
+      </ul>
+    </div>
+    </div>
+    </div>
+	</div>
+  </nav>
+</div>
+  {{!-- =================================== --}}
+   <div id = "mainContainer"> 
+
+    {{!-- Main div  --}}
+
+      <main>
+	
+<div class="container-fluid main-div">
+	<div class="row">
+		<div class="col-sm-3 col-md-3 col-lg-3 ">
+			<div class="friendlist">
+				<div class="text-center pt-2">
+					<h4 style="font-family: sans-serif;" class="indigo-text text-darken-4"><b>Friend List</b></h4>
+				</div>
+			<ul >
+         {{#each friends}}
+				<a ><li><img src="/view/images/IMG_20190724_010454_866.jpg" alt="" class="circle img-fluid" width="40px" ><h6 style="display: inline-block; padding-left: 10px;"> {{this.name}} {{#if this.active}} <b style="color:lightgreen;font-size:50px">.</b> {{/if}}</h6>
+        <button onclick="{get_otherUser_toCall(value)}" value={{this.name}} class="right" style="color: green ;padding-right:10px ;padding-top:10px;"><i class="material-icons">call</i></button></li><br>
+				<hr style="margin-right: 10px; margin-top: 0px;"></a>
+         {{/each}}
+			</ul>
+	</div>
+		</div>
+		
+	<div class="video-div col-sm-9 col-md-9 col-lg-9">
+		<div>
+			<video id="remote" autoplay height="500px" width="75%" style="float: left; padding-right: 0px;background:black; margin-top: 10px;" class="img-fluid">
+				</video>
+         
+		</div>
+		<div >
+			<video id="local" autoplay  height="250px" width="24.5%" class="img-fluid" style="margin-left: 2px;background:black; margin-top: 10px;">
+				
+			</video>
+     
+			
+		</div>
+		<div class="">
+				<textarea name="chat" placeholder="Your chat will shown here!" style="margin-left: 2px; border: 2px solid navy !important; width: 24.5%; height: 245px; font-size: 20px; font-family: sans-serif; padding: 10px;"></textarea>
+			</div>
+     <a href="/close"><button class="btn " style="width:75%;font-weight:bolder; background:red"  id="close-call">End call</button></a>	
+		
+	</div>
+	</div>
+	
+</div>
+</main>
+</div>
+          {{!-- ===================================== --}}
+
+{{!-- Footer text chat area  --}}
+<footer class="grey darken-1 footer" style="margin-top: 50px;">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col s12 m12 l12 " style="height: 50px; margin-top: 10px;">
+				<input type="text" name="text" placeholder="Type a message..." style="width: 90%; height: 40px; background: white; border-radius: 50px;
+         padding-left: 10px; font-family: sans-serif; border: 2px solid navy !important;">
+				<a href="" class="btn indigo darken-4" style="width:10%; margin-top: -5px; right: 
+        center; width: 100px; border-radius: 40px; height: 42px; font-weight: bold;padding-top: -50px !important;">
+        <span style="float: left; margin-top: 10px;"><p style="color: white; font font-weight: 900;">send</p></span>
+        <i class="material-icons" style="margin-left: 0px;  margin-top: 3px;">send</i></a>
+			</div>
+		</div>
+	</div>
+</footer>
+
+    
+    <script src="webrtc.js"></script>
+    <script> window.onload = setTimeout(get_user_name, 3000)</script>
+
+
+
+
+
+    
+    
+
+
+    
+    
+    
+    
+    
+    
+    {{!-- older loging for testing --}}
+    {{!-- <div id="login">
+      <label for="username">User Name </label>
+      <input id="username" placeholder="Enter user name" required="" autofocus="">
+      <br>
+      <label for="username">Password </label>
+      <input id="password" placeholder="Enter user password" required="" autofocus="">
+      <button id="login">Login</button>
+    </div> --}}
+    {{!-- <div id="friends_list"><ul style="padding-top: 10px;"> 
+      {{#each friends}}
+        <li><p><button onclick="{get_otherUser_toCall(value)}" value="{{this.name}}">{{this.name}}
+          {{#if this.active}} . {{/if}} </button></p></li>
+        <input type="hidden" id="current_users" value="{{this.name}}" />
+        {{/each}}
+    </ul></div> --}}

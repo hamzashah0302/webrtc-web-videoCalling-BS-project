@@ -1,0 +1,32 @@
+div#call {
+  
+  display: block;
+  margin: 0 auto;
+  width: 500px;
+  height: 500px;
+}
+#login{
+  background-color: rgb(183, 183, 197);
+  animation-direction: alternate;
+}
+#video local,remote {
+  background: white;
+  border: 1px solid gray;
+  
+}
+#mainContainer{
+  background-color:whitesmoke;
+
+}
+button#login{
+  background-color: aquamarine;
+}
+#callArea{
+  padding-top: 100px;
+  height: 200px;
+  width: 100%;
+}
+
+#friends_list{
+position: absolute;
+}

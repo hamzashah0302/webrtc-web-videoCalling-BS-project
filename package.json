@@ -1,0 +1,35 @@
+{
+  "name": "webrtc",
+  "version": "1.0.0",
+  "description": "An 'as simple as it gets' WebRTC example.",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "nodemon server/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shanet/WebRTC-Example.git"
+  },
+  "keywords": [
+    "webrtc"
+  ],
+  "author": "shane tully",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shanet/WebRTC-Example/issues"
+  },
+  "homepage": "https://github.com/shanet/WebRTC-Example#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "bootstrap": "^4.3.1",
+    "cookie-parser": "^1.4.4",
+    "express": "^4.17.1",
+    "express-handlebars": "^3.1.0",
+    "express-session": "^1.16.2",
+    "handlebars": "^4.1.2",
+    "mongoose": "^5.6.13",
+    "nodemon": "^1.19.1",
+    "ws": "3.3.2"
+  }
+}
