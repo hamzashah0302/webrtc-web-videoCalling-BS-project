@@ -1,18 +1,11 @@
 {{!--css links ==================================== --}}
 <link rel="icon" type="image/png" href="/view/images/icons/favicon.jpg"/>
-
 	<link rel="stylesheet"  href="/view/vendor/bootstrap/css/bootstrap.min.css">
-
 	<link rel="stylesheet"  href="/view/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-
 	<link rel="stylesheet"  href="/view/fonts/Linearicons-Free-v1.0.0/icon-font.min.css">
-
 	<link rel="stylesheet"  href="/view/vendor/animate/animate.css">
-	
 	<link rel="stylesheet"  href="/view/vendor/css-hamburgers/hamburgers.min.css">
-
  <link rel="stylesheet"  href="/view/vendor/select2/select2.min.css">
-
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
  {{!-- <link rel="stylesheet" href="myProjects/webProject/icofont/css/icofont.min.css"> --}}
 	  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -63,7 +56,7 @@
 
     {{!-- Main div  --}}
 
-      <main>
+      <main >
 	
 <div class="container-fluid main-div">
 	<div class="row">
@@ -73,7 +66,7 @@
 					<h4 style="font-family: sans-serif;" class="indigo-text text-darken-4"><b>Friend List</b></h4>
 				</div>
 			<ul >
-         {{#each friends}}
+         {{#each user_friends}}
 				<a ><li><img src="/view/images/IMG_20190724_010454_866.jpg" alt="" class="circle img-fluid" width="40px" ><h6 style="display: inline-block; padding-left: 10px;"> {{this.name}} {{#if this.active}} <b style="color:lightgreen;font-size:50px">.</b> {{/if}}</h6>
         <button onclick="{get_otherUser_toCall(value)}" value={{this.name}} class="right" style="color: green ;padding-right:10px ;padding-top:10px;"><i class="material-icons">call</i></button></li><br>
 				<hr style="margin-right: 10px; margin-top: 0px;"></a>
@@ -122,11 +115,16 @@
 			</div>
 		</div>
 	</div>
+  
 </footer>
 
     
     <script src="webrtc.js"></script>
     <script> window.onload = setTimeout(get_user_name, 3000)</script>
+    {{!-- <script> setInterval(function(){
+      var check = document.getElementById("check_active")
+      if()
+      console.log("fuction calling")},5000) </script> --}}
 
 
 
@@ -142,19 +140,4 @@
     
     
     
-    {{!-- older loging for testing --}}
-    {{!-- <div id="login">
-      <label for="username">User Name </label>
-      <input id="username" placeholder="Enter user name" required="" autofocus="">
-      <br>
-      <label for="username">Password </label>
-      <input id="password" placeholder="Enter user password" required="" autofocus="">
-      <button id="login">Login</button>
-    </div> --}}
-    {{!-- <div id="friends_list"><ul style="padding-top: 10px;"> 
-      {{#each friends}}
-        <li><p><button onclick="{get_otherUser_toCall(value)}" value="{{this.name}}">{{this.name}}
-          {{#if this.active}} . {{/if}} </button></p></li>
-        <input type="hidden" id="current_users" value="{{this.name}}" />
-        {{/each}}
-    </ul></div> --}}
+    

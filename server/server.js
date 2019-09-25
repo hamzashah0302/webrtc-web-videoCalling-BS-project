@@ -11,9 +11,15 @@ const WebSocketServer = WebSocket.Server;
 var app = express();
 var exphbs  = require('express-handlebars');
 const users = {}
+let check_active_user =[];
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/users', {useNewUrlParser: true});
 var Schema = mongoose.Schema;
+// Yes, TLS is required
+const serverConfig = {
+  key: fs.readFileSync('key.pem'),
+  cert: fs.readFileSync('cert.pem'),
+};
 
 
 // Authentication and Authorization Middleware
@@ -26,19 +32,15 @@ var auth = async function(req, res, next) {
     return res.sendStatus(401);
 };
 
-
+// Schema design --------------
 var userDataSchema = new Schema({
   name: {type: String, required: true},
   password: String,
-  friends : String
+  friends : [{name : String}]
   },{collation : 'users'})
   var UserData = mongoose.model('users', userDataSchema);
 
-// Yes, TLS is required
-const serverConfig = {
-  key: fs.readFileSync('key.pem'),
-  cert: fs.readFileSync('cert.pem'),
-};
+
 
 app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
@@ -59,23 +61,40 @@ app.use(session({
 // // ----------------------------------------------------------------------------------------
 
 app.get("/",function(req,res){
-  // database work here...
+  
       
-  res.render("login",{"friends":[{"name":"f11","active":true},{"name":'f22'}]});
+  res.render("login");
   
 })
 
+
 app.get("/webrtc",auth, function(req,res){
+    //  retrieve user data from db
       let id = req.session.name;
-      res.render("home",{id, "friends":[{"name":"hamza","active":false},{"name":'umar',"active":true}]});
+      UserData.findOne({name: id}, function(err , data){ 
+      if(err)res.send("No user found ")
+      else 
+      var user_friends = data.friends; 
+      
+      res.render("home",{id, user_friends});
       console.log('session works =' +id)
+       
+      })
 })
+
 
 app.get("/webrtc.js",function(req,res){
   res.sendFile(path.resolve(__dirname+"/../view/webrtc.js"));
 })
 
+app.get('/sign_up', function(req,res){
+  res.render("sign_up")
 
+})
+
+app.get("/close" , function(req, res){
+  res.redirect("/webrtc")
+})
     
 // ---------------------------------------------------------------------------------------------//
       //  Manage requests from client
@@ -97,14 +116,37 @@ app.post("/submit/", (req, res) => {
     }
    })
 })
-app.get("/logout", function(req, res){
+app.get("/logout",async function(req, res){
   req.session.destroy();
   console.log("session is distroy")
   res.redirect("/")
 })
-  
-app.get('/close', function(req,res){
-  res.redirect('/webrtc');
+
+// sign_up  
+app.post("/sign_up", function(req, res){
+let new_user = req.body.new_user;
+let pass = req.body.pass;
+let check_user;
+UserData.findOne({'name': new_user}, function(err , user){
+  if(err) res.send("error in retriving data");{
+    if(user) res.send("user name is already taken ")
+    else{
+      UserData.create({name: new_user, password: pass}, function (err, data) {
+        if (err) {
+          console.log('could not insert')
+          throw err
+        }
+        console.log('inserted account : ' +data)
+       res.redirect("/");
+      })
+
+    } 
+  }
+    });
+
+
+ 
+
 })
 
 
@@ -127,10 +169,10 @@ const sendTo = (ws, message) => {
 //    Handling signals...
 wss.on('connection', ws => {
   console.log('User connected')
-
+ 
   ws.on('message', message => {
     let data = null
-
+    
     try {
       data = JSON.parse(message)
     } catch (error) {
@@ -216,3 +258,10 @@ wss.on('connection', ws => {
 })
 console.log("Server runing on https://localhost:8081")
 
+
+// setInterval(function(){
+//   check_active_user.forEach(function(user){
+//     if(user.readyState === WebSocket.OPEN)
+//     console.log("active are here "+ user);
+//   })
+//  }, 3000);

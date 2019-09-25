@@ -50,12 +50,6 @@ ws.onmessage = async msg => {
   }
 }
 document.getElementById("close-call").disabled= "disabled"
-// document.querySelector('button#close-call').style.display= 'none'
-// document.querySelector('div#callArea').style.display = 'none'
-// document.querySelector('div#video').style.display = 'none'
-// login Operation geting user id 
-
-
 
 var constraints = {
   video: {
@@ -80,35 +74,6 @@ const handleLogin = success => {
 }
 
  
-// document.querySelector('button#call').addEventListener('click', async () => {
- 
-//   const callToUsername = document.querySelector('input#username-to-call').value
-  
-//   await getMedia();
-
-//   if (callToUsername.length === 0) {
-//     alert('Enter a username 😉')
-//     return
-//   }
-  
-//   otherUsername = callToUsername
-
-//   connection.createOffer(
-//     offer => {
-//       sendMessage({
-//         type: 'offer',
-//         offer: offer
-//       })
-
-//       connection.setLocalDescription(offer)
-//     },
-//     error => {
-//       alert('Error when creating an offer')
-//       console.error(error)
-//     }
-//   )
-// })
-
 const handleOffer = async (offer, username) => {
   // document.querySelector('div#video').style.display = 'block';
  await getMedia();
@@ -138,14 +103,6 @@ const handleCandidate = candidate => {
 const handleAnswer = answer => {
   connection.setRemoteDescription(new RTCSessionDescription(answer))
 }
-
-document.querySelector('button#close-call').addEventListener('click', async () => {
-  // sendMessage({
-  //   type: 'close'
-  // })
-  // await handleClose()
-  // location.reload(true);
-})
 
 const handleClose = () => {
   otherUsername = null

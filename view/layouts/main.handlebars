@@ -19,8 +19,11 @@
   
   </head>
   
-  <body>
+  <body onunload="check_active()">
     {{{body}}}
     
   </body>
+  <script>function check_active(){
+
+    navigator.sendBeacon('/closed', data);}</script>
 </html>
