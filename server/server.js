@@ -36,11 +36,12 @@ var auth = async function(req, res, next) {
 var userDataSchema = new Schema({
   name: {type: String, required: true},
   password: String,
-  friends : [{name : String}]
+  friends : [{name : String}],
+  messages :[{name: String, msg : String , data: Date}]
   },{collation : 'users'})
   var UserData = mongoose.model('users', userDataSchema);
 
-
+    
 
 app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
@@ -75,8 +76,8 @@ app.get("/webrtc",auth, function(req,res){
       if(err)res.send("No user found ")
       else 
       var user_friends = data.friends; 
-      
-      res.render("home",{id, user_friends});
+      var messages = req.query.msg
+      res.render("home",{id, messages, user_friends});
       console.log('session works =' +id)
        
       })
@@ -149,6 +150,26 @@ UserData.findOne({'name': new_user}, function(err , user){
 
 })
 
+// messages from db
+app.get("/message", function(req,res){
+  let user = req.session.name
+  var user_messages =[];
+  UserData.findOne({name: user}, function(err , data){ 
+    if(err)res.send("No data found ")
+    else {
+      data.messages.forEach(element => {
+        if(element.name== "umar")
+        user_messages.push(element);
+      });
+      console.log("check messages : "+ user_messages)
+       
+    
+    // user_messages.forEach(element => {
+    //  console.log("Mesages data are here :" + element) 
+    // });
+  }
+})
+}) 
 
 
 
@@ -169,7 +190,7 @@ const sendTo = (ws, message) => {
 //    Handling signals...
 wss.on('connection', ws => {
   console.log('User connected')
- 
+
   ws.on('message', message => {
     let data = null
     
@@ -181,6 +202,7 @@ wss.on('connection', ws => {
     }
 
     switch (data.type) {
+      
       case 'login':
         console.log('User logged', data.username)
         if (users[data.username]) {
@@ -228,7 +250,15 @@ wss.on('connection', ws => {
         if (users[data.otherUsername] != null) {
           sendTo(users[data.otherUsername], { type: 'close' })
         }
+         break
 
+        case 'test':
+          if(users[data.other_username]==undefined){
+          console.log("user is offline and the message is store in databse ")
+          }
+         else{
+             console.log(data.text+" and u want to send to :"+ data.other_username);
+            sendTo(users[data.other_username], {type : 'test', text:data.text , from:data.from})}
         break
 
       default:

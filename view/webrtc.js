@@ -1,9 +1,11 @@
 //import { sign } from "crypto";
 let connection = null
-let name = null
+
+let name ;
 let otherUsername = null
 var ws;
 const HTTPS_PORT = 8081;
+let other_username_for_msg = '';
 
 var peerConnectionConfig = {
   'iceServers': [
@@ -11,6 +13,24 @@ var peerConnectionConfig = {
     {'urls': 'stun:stun.l.google.com:19302'},
   ]
 };
+function texting(){
+  if(!other_username_for_msg){return alert("please select a user to send message")  } 
+  var txt = document.getElementById("text_message");
+  
+  sendMessage({
+    type: 'test',
+    text: txt.value,
+    other_username : other_username_for_msg,
+    from : name
+  })
+  $(function(){
+    message_show = $('#message_show')
+     message_show.append('<div>' +' me : '+ txt.value+ '</div>')
+    console.log("check it dude :" +txt.value)
+  })
+  setTimeout(function(){txt.value =''},1000) ;
+}
+
 ws = new WebSocket('wss://' + window.location.hostname + ':'+HTTPS_PORT);
 connection = new RTCPeerConnection(peerConnectionConfig);
 const sendMessage = message => {
@@ -28,7 +48,7 @@ ws.onmessage = async msg => {
     return;
    }
   switch (data.type) {
-
+    
     case 'login':
       handleLogin(data.success)
       break
@@ -45,6 +65,11 @@ ws.onmessage = async msg => {
       handleClose()
       location.reload(true);
       break
+    case 'test':
+    handletext(data); 
+    console.log(data.text);
+
+    break
     default:
       break
   }
@@ -147,7 +172,7 @@ connection.onicecandidate = event => {
  
 function get_user_name() {
     username = document.querySelector('input#user_id').value
-    
+    name =username;
   sendMessage({
     type: 'login',
     username: username
@@ -181,4 +206,14 @@ async function get_otherUser_toCall(otheruser_name){
       console.error(error)
     }
   )
+}
+function get_otheruser_to_msg(value){
+ other_username_for_msg = value;
+}
+
+function handletext(txt){
+$(function(){
+  message_show = $('#message_show')
+  message_show.append('<div>'+txt.from +' : '+ txt.text+ '</div>')
+})
 }
