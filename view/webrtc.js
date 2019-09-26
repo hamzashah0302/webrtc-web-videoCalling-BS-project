@@ -208,8 +208,12 @@ async function get_otherUser_toCall(otheruser_name){
   )
 }
 function get_otheruser_to_msg(value){
+
  other_username_for_msg = value;
 }
+// $('#color').click(function() {
+//   $('#div_color').addClass('myClass');
+// });
 
 function handletext(txt){
 $(function(){

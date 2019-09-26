@@ -70,10 +70,10 @@
 				</div>
 			<ul >
          {{#each user_friends}}
-				<a ><li><img src="/view/images/icons/friend.png" alt="" class="circle img-fluid" width="40px" ><h6 style="display: inline-block; padding-left: 10px;"> {{this.name}} {{#if this.active}} <b style="color:lightgreen;font-size:50px">.</b> {{/if}}</h6>
-		<button onclick="{get_otherUser_toCall(value)}" value={{this.name}} class="right" style="color: green ;padding-right:10px ;padding-top:10px;"><i class="material-icons">call</i></button>
-		 <button onclick="{get_otheruser_to_msg(value)}" class="right" value="{{this.name}}" style="color: green ;padding-right:10px ;padding-top:10px;"><i class="material-icons">message</i></button> </li><br>
-				<hr style="margin-right: 10px; margin-top: 0px;"></a>
+				<div id="{{this.name}}" class="usersmenu" onclick="{get_otheruser_to_msg(id)}" ><li><img src="/view/images/icons/friend.png" alt="" class="circle img-fluid" width="40px" ><h6 style="display: inline-block; padding-left: 10px;"> {{this.name}} {{#if this.active}} <b style="color:lightgreen;font-size:50px">.</b> {{/if}}</h6>
+		<button  onclick="{get_otherUser_toCall(value)}" value={{this.name}} class="right" style="color: green ;padding-right:10px ;padding-top:10px;"><i class="material-icons">call</i></button>
+		 <button id="color"  class="right " value="{{this.name}}" style="color: green ;padding-right:10px ;padding-top:10px;"><i class="material-icons">message</i></button> </li><br>
+				<hr style="margin-right: 10px; margin-top: 0px;"></div>
          {{/each}}
 			</ul>
 	</div>
@@ -97,10 +97,6 @@
                         <div id="message_show"></div>
                         </div>
                     </div>
-				{{!-- <textarea name="chat" placeholder="Your chat will shown here!" style="margin-left: 2px; border: 2px solid navy !important; width: 24.5%; height: 245px; font-size: 20px; font-family: sans-serif; padding: 10px;"></textarea> --}}
-             {{!-- {{#each messages}}
-			<p>{{this.msg}} </p>
-		{{/each}} --}}
 			</div>
      <a href="/close"><button class="btn " style="width:75%;font-weight:bolder; background:red"  id="close-call">End call</button></a>	
 		
@@ -131,7 +127,15 @@
 
     
     <script src="webrtc.js"></script>
-    <script> window.onload = setTimeout(get_user_name, 3000)</script>
+    <script> 
+		
+		$(document).on("click",'.usersmenu',function(){
+			$(".myClass").removeClass("myClass");
+			$(this).addClass("myClass");
+		})
+		
+		
+		window.onload = setTimeout(get_user_name, 3000)</script>
     {{!-- <script> setInterval(function(){
       var check = document.getElementById("check_active")
       if()
