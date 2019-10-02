@@ -6,6 +6,7 @@ let otherUsername = null
 var ws;
 const HTTPS_PORT = 8081;
 let other_username_for_msg = '';
+let searched_friend_name = null;
 
 var peerConnectionConfig = {
   'iceServers': [
@@ -68,13 +69,16 @@ ws.onmessage = async msg => {
     case 'test':
     handletext(data); 
     console.log(data.text);
+    break
 
+    case 'searched_friend':
+      handle_searched_friend(data);
     break
     default:
       break
   }
 }
-document.getElementById("close-call").disabled= "disabled"
+document.getElementById("close-call").style.display= "none"
 
 var constraints = {
   video: {
@@ -138,9 +142,29 @@ const handleClose = () => {
   connection.onaddstream = null
 
 }
+function handletext(txt){
+  $(function(){
+    message_show = $('#message_show')
+    message_show.append('<div>'+txt.from +' : '+ txt.text+ '</div>')
+  })
+  }
+function handle_searched_friend(data){
+if(data.name!=null){
+  
+  $(function(){
+    $("#add_friend").removeClass("hide")
+    searched_friend_name = data.name
+   $("#searched_friend").append("<h6>"+data.name+"</h6>");
+  })
+}
+else{
+  $("#add_friend").addClass("hide")
+  $("#searched_friend").append("<h6>No result found on Searched data</h6>")
+}
+}
 
 async function getMedia(){
-  document.getElementById("close-call").disabled= false
+  document.getElementById("close-call").style.display= "block"
   let localStream
   try {
     localStream =await navigator.mediaDevices.getUserMedia(constraints)
@@ -208,16 +232,43 @@ async function get_otherUser_toCall(otheruser_name){
   )
 }
 function get_otheruser_to_msg(value){
+  other_username_for_msg = value;
+  let txt_clear = document.getElementById("message_show");
+  txt_clear.innerHTML='';
+  // get previous message history
+   
 
- other_username_for_msg = value;
 }
-// $('#color').click(function() {
-//   $('#div_color').addClass('myClass');
-// });
 
-function handletext(txt){
-$(function(){
-  message_show = $('#message_show')
-  message_show.append('<div>'+txt.from +' : '+ txt.text+ '</div>')
-})
-}
+
+// search friend 
+$(document).on("click", "#search_friend" , function(){
+   $("#searched_friend").empty();
+  search_friend_txt = $("#search_friend_txt").val();
+  username = document.querySelector('input#user_id').value
+  $("#div_searched_friend").removeClass("hide")
+  $("#div_searched_friend").addClass("show")
+  sendMessage({
+    type: 'friend_search',
+    find_username: search_friend_txt,
+    username : username})
+    // $("#search_friend_txt").val("");
+  })
+
+  // add friend
+  $(document).on("click","#add_friend",function(){
+    username = document.querySelector('input#user_id').value
+   let add_friend_name = searched_friend_name;
+   sendMessage({type: 'add_friend',
+  othername: add_friend_name, username: username})
+   searched_friend_name = null;
+   $(this).addClass("hide")
+   console.log(" add funnction called")
+   setTimeout(function(){location.reload(true)} , 2000); 
+  })
+
+  // close div_searched_friend div 
+  $(document).on("click","#close_div",function(){
+    $("#div_searched_friend").addClass("hide")
+
+  })

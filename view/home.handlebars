@@ -19,14 +19,13 @@
 	<div class="row">	
     <div class="nav-wrapper col s12 l12 m12">
     <div class="col m12 l8 align-center">
-    	<a href="#" class="brand-logo m-t-2" style="letter-spacing: 1px;"><img class="circle" src="/view/images/logo.jpg" alt="Logo" style="width:50px;"><b> SkyChat </b><span><small style="font-size: 15px;">Meet the World<small></span></a>
+    	<a class="brand-logo m-t-2" style="letter-spacing: 1px;"><img class="circle" src="/view/images/logo.jpg" alt="Logo" style="width:50px;"><b> SkyChat </b><span><small style="font-size: 15px;">Meet the World<small></span></a>
     </div>
     <div class="col m12 l4 ">
       <ul id="nav-mobile" class="right hide-on-med-and-down">
-        <li><a href="#">Profile <i class="fa fa-user" aria-hidden="true"></i>
-</a></li>
+        
         <li><a href="/logout">logout<i class="fa fa-sign-out"></i></a> 
-</li> <button id="testing" onclick="testing()"><h4>test</h4> </button>
+</li> 
       </ul>
     </div>
     </div>
@@ -42,8 +41,9 @@
 	<div class="row">	
     <div class="nav-wrapper col s12 l12 m12">
     <div class="col m12 l12 m12 text-left align-left " style="align-items: right;">
-      <ul id="nav-mobile">  <a class="right" style="margin-top: 15px">Search Friend</a>
-	  <input id="sreach_friend" class="right" style="width: 15%;margin-top: 5px; background-color:azure" type="text" placeholder="Enter friend username">
+      <ul id="nav-mobile">  <a class="right" id="search_friend" style="margin-top: 15px">Search Friend</a>
+	  <input id="search_friend_txt" class="right" style="width: 15%;margin-top: 5px; background-color:azure" type="text" placeholder="add new friend">
+	  
         <h5 class="left">Welcome {{id}} </h5>
 		
            <input type="hidden" id ="user_id" value={{id}}>
@@ -54,6 +54,13 @@
 	</div>
   </nav>
 </div>
+{{!-- sreach friends --}}
+    <div id="div_searched_friend" style="padding-left: 30px; background-color:blue" class="hide">
+		<label id="searched_friend" style="font-weight: bold"></label>
+		<i id="close_div" class="material-icons right hover" style="height: 30px;width:10px;margin-right:30px">close</i>
+	<button id="add_friend" class="btn right" style="margin-right:30px; margin-top:7px" >add</button></div>
+	
+	
   {{!-- =================================== --}}
    <div id = "mainContainer"> 
 
@@ -68,11 +75,10 @@
 				<div class="text-center pt-2">
 					<h4 style="font-family: sans-serif;" class="indigo-text text-darken-4"><b>Friend List</b></h4>
 				</div>
-			<ul >
+			<ul class="friend_list" >
          {{#each user_friends}}
 				<div id="{{this.name}}" class="usersmenu" onclick="{get_otheruser_to_msg(id)}" ><li><img src="/view/images/icons/friend.png" alt="" class="circle img-fluid" width="40px" ><h6 style="display: inline-block; padding-left: 10px;"> {{this.name}} {{#if this.active}} <b style="color:lightgreen;font-size:50px">.</b> {{/if}}</h6>
-		<button  onclick="{get_otherUser_toCall(value)}" value={{this.name}} class="right" style="color: green ;padding-right:10px ;padding-top:10px;"><i class="material-icons">call</i></button>
-		 <button id="color"  class="right " value="{{this.name}}" style="color: green ;padding-right:10px ;padding-top:10px;"><i class="material-icons">message</i></button> </li><br>
+		<button  onclick="{get_otherUser_toCall(value)}" value={{this.name}} class="right" style="color: green ;padding-right:10px ;padding-top:10px;"><i class="material-icons">call</i></button> </li><br>
 				<hr style="margin-right: 10px; margin-top: 0px;"></div>
          {{/each}}
 			</ul>
@@ -134,13 +140,9 @@
 			$(this).addClass("myClass");
 		})
 		
-		
-		window.onload = setTimeout(get_user_name, 3000)</script>
-    {{!-- <script> setInterval(function(){
-      var check = document.getElementById("check_active")
-      if()
-      console.log("fuction calling")},5000) </script> --}}
-
+		window.onload = setTimeout(get_user_name, 2000)
+		 </script>
+    
 
 
 

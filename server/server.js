@@ -36,12 +36,20 @@ var auth = async function(req, res, next) {
 var userDataSchema = new Schema({
   name: {type: String, required: true},
   password: String,
-  friends : [{name : String}],
-  messages :[{name: String, msg : String , data: Date}]
+  friends : [{name : String}]
   },{collation : 'users'})
   var UserData = mongoose.model('users', userDataSchema);
 
-    
+// messages Schema
+
+  var userMessagesSchema = new Schema({
+  sender:  String,
+  receiver: String,
+  text : String}
+  ,{collation : 'messages'})
+
+  var UserMessages = mongoose.model('messages', userMessagesSchema);
+
 
 app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
@@ -251,15 +259,72 @@ wss.on('connection', ws => {
           sendTo(users[data.otherUsername], { type: 'close' })
         }
          break
-
+        // messaging 
         case 'test':
+          let sender = data.from
+          let receiver = data.other_username
           if(users[data.other_username]==undefined){
+            
           console.log("user is offline and the message is store in databse ")
           }
          else{
-             console.log(data.text+" and u want to send to :"+ data.other_username);
-            sendTo(users[data.other_username], {type : 'test', text:data.text , from:data.from})}
+             console.log("ur msg is : "+data.text+" and u want to send to :"+ data.other_username);
+            sendTo(users[data.other_username], {type : 'test', text:data.text , from:data.from})
+          }
+           UserMessages.create({sender: sender, receiver: receiver ,text: data.text}, function (err, data) {
+              if(err)console.log("Error in storing message:"+err)
+              else
+              console.log("Message store success in db :" )
+            }) 
         break
+        // search friend
+        case 'friend_search':
+          let find_username = data.find_username;
+          let username = data.username
+            UserData.findOne({name: find_username}, function(err , doc){
+             if(err)return res.sendStatus(401);
+             if(doc!=null)
+             sendTo(users[username] , {type :"searched_friend" ,name:doc.name})
+             else{
+              sendTo(users[username],{type:"searched_friend", name:null})
+             }
+
+            })
+        break
+        // add friend in friend list of a user
+       case 'add_friend':
+          console.log(" add funnction called")
+         UserData.findOne({'name': data.username},function(err, doc){
+           var check = doc.friends;
+           let c = false;
+          //  check if user already added to friend list
+           check.forEach(element => {
+             if(data.othername==element.name){ c = true }
+           });
+
+          if(c==false){
+           UserData.findOneAndUpdate(
+            { name: data.username }, 
+            { $push: { friends:{ name: data.othername  }} },
+           function (error, success) {
+                 if (error) {
+                     console.log(error);
+                 } else {
+                     console.log("friends added success");
+                 }});
+                //  save data to other user table too
+                UserData.findOneAndUpdate(
+                  { name: data.othername }, 
+                  { $push: { friends:{ name: data.username  }} },
+                 function(err, doc){
+                 if(err) console.log(" error : "+err)
+                 else console.log(" friends added to other table too ")
+                 })}
+
+          else console.log("user already added...");       
+         })   
+      
+       break;
 
       default:
         sendTo(ws, {
