@@ -14,6 +14,14 @@ var peerConnectionConfig = {
     {'urls': 'stun:stun.l.google.com:19302'},
   ]
 };
+//  send message when enter button pressed
+$("#text_message").keypress(function(event) {
+  if (event.which == 13) {
+    if(!other_username_for_msg){return alert("please select a user to send message") 
+     }
+     else texting();
+ }
+});
 function texting(){
   if(!other_username_for_msg){return alert("please select a user to send message")  } 
   var txt = document.getElementById("text_message");
@@ -100,14 +108,12 @@ const handleLogin = success => {
     alert('😞 Username already taken')
   } else {
      
-    // document.querySelector('div#call').style.display = 'block'
   console.log("your logged in" );
         }
 }
 
  
 const handleOffer = async (offer, username) => {
-  // document.querySelector('div#video').style.display = 'block';
  await getMedia();
   otherUsername = username
       connection.setRemoteDescription(new RTCSessionDescription(offer))
