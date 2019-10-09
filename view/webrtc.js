@@ -19,7 +19,7 @@ function texting(){
   var txt = document.getElementById("text_message");
   
   sendMessage({
-    type: 'test',
+    type: 'texting',
     text: txt.value,
     other_username : other_username_for_msg,
     from : name
@@ -27,7 +27,7 @@ function texting(){
   $(function(){
     message_show = $('#message_show')
      message_show.append('<div>' +' me : '+ txt.value+ '</div>')
-    console.log("check it dude :" +txt.value)
+    // console.log("check it dude :" +txt.value)
   })
   setTimeout(function(){txt.value =''},1000) ;
 }
@@ -66,7 +66,7 @@ ws.onmessage = async msg => {
       handleClose()
       location.reload(true);
       break
-    case 'test':
+    case 'texting':
     handletext(data); 
     console.log(data.text);
     break
@@ -74,6 +74,9 @@ ws.onmessage = async msg => {
     case 'searched_friend':
       handle_searched_friend(data);
     break
+    case 'message_history':
+      handleHistory(data)
+      break
     default:
       break
   }
@@ -163,6 +166,21 @@ else{
 }
 }
 
+function handleHistory(params) {
+  username = document.querySelector('input#user_id').value
+  params.messages.forEach(element => {
+    console.log("got history :"+ element.message)
+    $(function(){
+      message_show = $('#message_show')
+      if(element.name==username)
+      message_show.append('<div>'+ 'Me'+' : '+ element.message+ '</div>')
+      else
+      message_show.append('<div>'+ element.name+' : '+ element.message+ '</div>')
+    })
+  });
+  
+}
+
 async function getMedia(){
   document.getElementById("close-call").style.display= "block"
   let localStream
@@ -236,7 +254,7 @@ function get_otheruser_to_msg(value){
   username = document.querySelector('input#user_id').value
   let txt_clear = document.getElementById("message_show");
   txt_clear.innerHTML='';
-  // get previous message history and signal to server
+  // getting previous message history and signal to server
    sendMessage({
      type: 'message_history',
      username: username,
@@ -257,7 +275,7 @@ $(document).on("click", "#search_friend" , function(){
     type: 'friend_search',
     find_username: search_friend_txt,
     username : username})
-    // $("#search_friend_txt").val("");
+     $("#search_friend_txt").val("");
   })
 
   // add friend
@@ -271,6 +289,8 @@ $(document).on("click", "#search_friend" , function(){
    console.log(" add funnction called")
    setTimeout(function(){location.reload(true)} , 2000); 
   })
+
+
 
   // close div_searched_friend div 
   $(document).on("click","#close_div",function(){

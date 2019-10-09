@@ -259,7 +259,7 @@ wss.on('connection', ws => {
         }
          break
         // messaging 
-        case 'test':
+        case 'texting':
           let sender = data.from
           let receiver = data.other_username
           if(users[data.other_username]==undefined){
@@ -268,7 +268,7 @@ wss.on('connection', ws => {
           }
          else{
              console.log("ur msg is : "+data.text+" and u want to send to :"+ data.other_username);
-            sendTo(users[data.other_username], {type : 'test', text:data.text , from:data.from})
+            sendTo(users[data.other_username], {type : 'texting', text:data.text , from:data.from})
           }
           UserMessages.findOne({$or:[{'names': {$elemMatch: {name1: sender, name2:receiver}}},{ 'names':{$elemMatch:{name1:receiver, name2:sender}}}]}, function(err , doc)
           {
@@ -286,7 +286,7 @@ wss.on('connection', ws => {
               // console.log(" name got : "+ check.names[0].name1)
               UserMessages.findOneAndUpdate(
                 { names: {$elemMatch:{name1: check.names[0].name1, name2:check.names[0].name2 } }},   
-                { $push: { text:{ name: check.names[0].name1, message: data.text  }} },
+                { $push: { text:{ name: sender, message: data.text  }} },
                function (error, success) {
                  if(error){console.log("Error : "+error)}
                  else{console.log("Message saved db :")}
@@ -314,7 +314,7 @@ wss.on('connection', ws => {
 
         // add friend in friend list of a user
        case 'add_friend':
-          console.log(" add funnction called")
+          // console.log(" add funnction called")
          UserData.findOne({'name': data.username},function(err, doc){
            var check = doc.friends;
            let c = false;
@@ -349,9 +349,17 @@ wss.on('connection', ws => {
        case 'message_history':
          let other_username = data.othername
          let name = data.username
-
-      
-         
+         UserMessages.findOne({$or:[{'names': {$elemMatch: {name1: name, name2:other_username}}},{ 'names':{$elemMatch:{name1:other_username, name2:name}}}]},
+          function(err , doc)
+          {
+            if(err)return console.log("Error :"+ err);
+            if(doc!==null){
+            let history = doc.text;
+            sendTo(users[name] , {type :"message_history" ,messages : history})
+          } else {
+            return console.log("No History found");
+          }
+        })
        break;
 
       default:
