@@ -43,9 +43,8 @@ var userDataSchema = new Schema({
 // messages Schema
 
   var userMessagesSchema = new Schema({
-  sender:  String,
-  receiver: String,
-  text : String}
+  names : [{name1 : String, name2: String}],
+  text : [{name :String , message: String}]}
   ,{collation : 'messages'})
 
   var UserMessages = mongoose.model('messages', userMessagesSchema);
@@ -271,12 +270,33 @@ wss.on('connection', ws => {
              console.log("ur msg is : "+data.text+" and u want to send to :"+ data.other_username);
             sendTo(users[data.other_username], {type : 'test', text:data.text , from:data.from})
           }
-           UserMessages.create({sender: sender, receiver: receiver ,text: data.text}, function (err, data) {
-              if(err)console.log("Error in storing message:"+err)
-              else
-              console.log("Message store success in db :" )
-            }) 
+          UserMessages.findOne({$or:[{'names': {$elemMatch: {name1: sender, name2:receiver}}},{ 'names':{$elemMatch:{name1:receiver, name2:sender}}}]}, function(err , doc)
+          {
+            if(err)return console.log("Error :"+ err);
+            let check = doc            
+            // if undefined then create new document
+            if(check ==undefined){
+              UserMessages.create({names:{ name1: sender, name2: receiver },text:{name:sender, message: data.text}}, function (err, data) {
+                if(err)console.log("Error in storing message:"+err)
+                else
+                console.log("doc created and Message store successfully in db :" )
+              }) 
+            }
+            else {
+              // console.log(" name got : "+ check.names[0].name1)
+              UserMessages.findOneAndUpdate(
+                { names: {$elemMatch:{name1: check.names[0].name1, name2:check.names[0].name2 } }},   
+                { $push: { text:{ name: check.names[0].name1, message: data.text  }} },
+               function (error, success) {
+                 if(error){console.log("Error : "+error)}
+                 else{console.log("Message saved db :")}
+            })
+          }
+          })
+
+
         break
+
         // search friend
         case 'friend_search':
           let find_username = data.find_username;
@@ -291,6 +311,7 @@ wss.on('connection', ws => {
 
             })
         break
+
         // add friend in friend list of a user
        case 'add_friend':
           console.log(" add funnction called")
@@ -324,6 +345,13 @@ wss.on('connection', ws => {
           else console.log("user already added...");       
          })   
       
+       break;
+       case 'message_history':
+         let other_username = data.othername
+         let name = data.username
+
+      
+         
        break;
 
       default:

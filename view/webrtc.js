@@ -233,10 +233,15 @@ async function get_otherUser_toCall(otheruser_name){
 }
 function get_otheruser_to_msg(value){
   other_username_for_msg = value;
+  username = document.querySelector('input#user_id').value
   let txt_clear = document.getElementById("message_show");
   txt_clear.innerHTML='';
-  // get previous message history
-   
+  // get previous message history and signal to server
+   sendMessage({
+     type: 'message_history',
+     username: username,
+     othername: other_username_for_msg
+  })
 
 }
 
