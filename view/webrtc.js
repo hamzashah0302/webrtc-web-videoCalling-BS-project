@@ -7,6 +7,7 @@ var ws;
 const HTTPS_PORT = 8081;
 let other_username_for_msg = '';
 let searched_friend_name = null;
+let wait = true
 
 var peerConnectionConfig = {
   'iceServers': [
@@ -25,13 +26,12 @@ $("#text_message").keypress(function(event) {
 function texting(){
   if(!other_username_for_msg){return alert("please select a user to send message")  } 
   var txt = document.getElementById("text_message");
-  
-  sendMessage({
-    type: 'texting',
-    text: txt.value,
-    other_username : other_username_for_msg,
-    from : name
-  })
+      sendMessage({
+        type: 'texting',
+        text: txt.value,
+        other_username : other_username_for_msg,
+        from : name
+        })
   $(function(){
     message_show = $('#message_show')
      message_show.append('<div>' +' me : '+ txt.value+ '</div>')
@@ -153,12 +153,21 @@ const handleClose = () => {
 }
 function handletext(txt){
   $(function(){
+    let txt_clear = document.getElementById("message_show");
+  txt_clear.innerHTML='';
     message_show = $('#message_show')
     message_show.append('<div>'+txt.from +' : '+ txt.text+ '</div>')
   })
   }
 function handle_searched_friend(data){
-if(data.name!=null){
+  username = document.querySelector('input#user_id').value
+   if(data.name==username){
+    $("#add_friend").addClass("hide")
+    $("#searched_friend").append("<h6>"+data.name+"</h6>");
+    console.log("Hey im called correct")
+  }
+
+else if(data.name!=null){
   
   $(function(){
     $("#add_friend").removeClass("hide")
@@ -166,6 +175,7 @@ if(data.name!=null){
    $("#searched_friend").append("<h6>"+data.name+"</h6>");
   })
 }
+
 else{
   $("#add_friend").addClass("hide")
   $("#searched_friend").append("<h6>No result found on Searched data</h6>")
@@ -233,27 +243,35 @@ async function get_otherUser_toCall(otheruser_name){
   console.log("Other User name is gotten = "+ otheruser_name);
   await getMedia();
 
-  if (otheruser_name.length === 0) {
-    alert('Enter a username 😉')
-    return
-  }
   otherUsername = otheruser_name
+   // wait for 2 sec while user connect to peer server
+   if(wait==true){setTimeout(function() {
+    connection.createOffer(
+      offer => {
+        sendMessage({
+          type: 'offer',
+          offer: offer })
+        connection.setLocalDescription(offer)
+      },
+      error => {
+        alert('Error when creating an offer')
+        console.error(error)})
+   wait= false 
+  } , 2000)}
+  else
+  {
+    connection.createOffer(
+      offer => {
+        sendMessage({
+          type: 'offer',
+          offer: offer })
+        connection.setLocalDescription(offer)
+      },
+      error => {
+        alert('Error when creating an offer')
+        console.error(error)})
+  }
   
-
-  connection.createOffer(
-    offer => {
-      sendMessage({
-        type: 'offer',
-        offer: offer
-      })
-
-      connection.setLocalDescription(offer)
-    },
-    error => {
-      alert('Error when creating an offer')
-      console.error(error)
-    }
-  )
 }
 function get_otheruser_to_msg(value){
   other_username_for_msg = value;
@@ -261,12 +279,21 @@ function get_otheruser_to_msg(value){
   let txt_clear = document.getElementById("message_show");
   txt_clear.innerHTML='';
   // getting previous message history and signal to server
+  // wait for 2 sec while user connect to peer server
+  if(wait==true){setTimeout(function() {
+    sendMessage({
+      type: 'message_history',
+      username: username,
+      othername: other_username_for_msg
+   })
+   wait= false 
+  } , 2000)}
+  else
    sendMessage({
      type: 'message_history',
      username: username,
      othername: other_username_for_msg
   })
-
 }
 
 
